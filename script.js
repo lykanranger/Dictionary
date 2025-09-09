@@ -24,12 +24,28 @@ async function fetchAPI(word) {
       meaningContainerEl.style.display = "block";
       audioEl.style.display = "inline-flex";
       titleEl.innerText = result[0].word;
-      meaningEl.innerText = result[0].meanings[0].definitions[0].definition;
+      const definition = result[0].meanings[0].definitions[0].definition;
+      meaningEl.innerText = definition;
+
+      // Word audio
       audioEl.src = result[0].phonetics[0].audio;
+
+      // Speak the meaning automatically
+      speakText(definition);
     }
   } catch (error) {
     console.log(error);
-    infoTextEl.innerText = `an error happened, try again later`;
+    infoTextEl.innerText = `An error happened, try again later`;
+  }
+}
+
+function speakText(text) {
+  if ("speechSynthesis" in window) {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "en-US"; // you can set voice/language
+    speechSynthesis.speak(utterance);
+  } else {
+    console.log("Text-to-speech not supported in this browser.");
   }
 }
 
